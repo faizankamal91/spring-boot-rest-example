@@ -25,9 +25,13 @@ pipeline{
                 sh 'mvn install -DskipTests'
             }
             post{
-                echo "========Success========"
+                success {
+                    echo "========Success========"
+                }
+                failure {
+                    echo "========Success========"
+                }
             }
         }
     }
-    
 }
