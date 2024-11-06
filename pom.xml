@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.javatpoint</groupId>
-	<artifactId>spring-boot-rest-example</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>springdemo</artifactId>
+	<version>v2</version>
 	<name>spring-boot-rest-example</name>
 	<description>Demo project for Spring Boot</description>
 
