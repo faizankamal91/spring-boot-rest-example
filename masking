@@ -81,6 +81,36 @@ public class SensitiveDataMaskingAdvice implements ResponseBodyAdvice<Object> {
     }
 }
 
+
+    private Object maskSensitiveFields(Object body) {
+        try {
+            if (body instanceof List) {
+                // Handle case where the response is a list of maps
+                List<Map<String, Object>> responseList = (List<Map<String, Object>>) body;
+                List<String> sensitiveFields = sensitiveDataService.getSensitiveFields();
+                for (Map<String, Object> map : responseList) {
+                    maskNestedSensitiveFields(map, sensitiveFields);
+                }
+                return responseList;
+            } else if (body instanceof Map) {
+                // Handle case where the response is a single map
+                Map<String, Object> responseMap = (Map<String, Object>) body;
+                List<String> sensitiveFields = sensitiveDataService.getSensitiveFields();
+                maskNestedSensitiveFields(responseMap, sensitiveFields);
+                return responseMap;
+            } else {
+                return body; // Return unmodified if not a map or list of maps
+            }
+        } catch (Exception e) {
+            // Log the exception and return the original body if an error occurs
+            e.printStackTrace();
+            return body;
+        }
+    }
+
+
+
+
 @Service
 class SensitiveDataService {
 
