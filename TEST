@@ -1,0 +1,46 @@
+package com.example.demo.service;
+
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class AuthService {
+
+    private String bearerToken;
+
+    public String getBearerToken() {
+        return bearerToken;
+    }
+
+    public boolean fetchToken() {
+        String url = "https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("client_id", "your-client-id");
+        requestBody.put("client_secret", "your-client-secret");
+        requestBody.put("grant_type", "client_credentials");
+        requestBody.put("scope", "https://management.azure.com/.default");
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                this.bearerToken = (String) response.getBody().get("access_token");
+                return true;
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to fetch token: " + e.getMessage());
+        }
+        return false;
+    }
+}
